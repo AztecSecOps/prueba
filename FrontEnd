@@ -426,3 +426,177 @@
             }
         }
     </style>
+    <script>
+        // Lógica principal - Persona A
+        const API_URL = 'https://jsonplaceholder.typicode.com';
+        
+        // Variables globales
+        let users = [];
+        let posts = [];
+        let comments = [];
+        
+        // Función para cambiar entre pestañas
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Quitar la clase active de todas las pestañas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Marcar la pestaña como activa
+            event.target.classList.add('active');
+            
+            // Cargar datos según la pestaña
+            switch(tabName) {
+                case 'users':
+                    if (users.length === 0) loadUsers();
+                    break;
+                case 'posts':
+                    if (posts.length === 0) loadPosts();
+                    break;
+                case 'comments':
+                    if (comments.length === 0) loadComments();
+                    break;
+            }
+        }
+        
+        // Cargar usuarios desde la API
+        async function loadUsers() {
+            try {
+                showLoading('users');
+                const response = await fetch(API_URL + '/users');
+                users = await response.json();
+                displayUsers();
+            } catch (error) {
+                showError('users', 'Error al cargar usuarios: ' + error.message);
+            }
+        }
+        
+        // Mostrar usuarios
+        function displayUsers(userList = users) {
+            const container = document.getElementById('users-content');
+            
+            let html = `
+                <div class="section-header">
+                    <input type="text" class="search-box" id="user-search" 
+                           placeholder="🔍 Buscar por nombre, email o ciudad..." 
+                           onkeyup="searchUsers()">
+                    <button class="btn-primary" onclick="openUserModal()">➕ Agregar Usuario</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Ciudad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            userList.forEach(user => {
+                html += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.address.city}</td>
+                        <td>
+                            <button class="btn-primary" onclick="editUser(${user.id})">✏️ Editar</button>
+                            <button class="btn-warning" onclick="viewUserPosts(${user.id})">📝 Posts</button>
+                            <button class="btn-danger" onclick="deleteUser(${user.id})">🗑️ Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // Buscar usuarios
+        function searchUsers() {
+            const searchTerm = document.getElementById('user-search').value.toLowerCase();
+            const filteredUsers = users.filter(user => 
+                user.name.toLowerCase().includes(searchTerm) || 
+                user.email.toLowerCase().includes(searchTerm) ||
+                user.address.city.toLowerCase().includes(searchTerm)
+            );
+            displayUsers(filteredUsers);
+        }
+        
+        // Cargar posts desde la API
+        async function loadPosts() {
+            try {
+                showLoading('posts');
+                const response = await fetch(API_URL + '/posts');
+                posts = await response.json();
+                displayPosts();
+            } catch (error) {
+                showError('posts', 'Error al cargar posts: ' + error.message);
+            }
+        }
+        
+        // Mostrar posts
+        function displayPosts(postList = posts) {
+            const container = document.getElementById('posts-content');
+            
+            let html = `
+                <div class="section-header">
+                    <input type="text" class="search-box" id="post-search" 
+                           placeholder="🔍 Buscar por título o contenido..." 
+                           onkeyup="searchPosts()">
+                    <button class="btn-primary" onclick="openPostModal()">➕ Agregar Post</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            postList.forEach(post => {
+                const user = users.find(u => u.id === post.userId);
+                const userName = user ? user.name : 'Desconocido';
+                
+                html += `
+                    <tr>
+                        <td>${post.id}</td>
+                        <td>${post.title}</td>
+                        <td>${userName}</td>
+                        <td>
+                            <button class="btn-primary" onclick="editPost(${post.id})">✏️ Editar</button>
+                            <button class="btn-warning" onclick="viewPostComments(${post.id})">💬 Comentarios</button>
+                            <button class="btn-danger" onclick="deletePost(${post.id})">🗑️ Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // Buscar posts
+        function searchPosts() {
+            const searchTerm = document.getElementById('post-search').value.toLowerCase();
+            const filteredPosts = posts.filter(post => 
+                post.title.toLowerCase().includes(searchTerm) || 
+                post.body.toLowerCase().includes(searchTerm)
+            );
+            displayPosts(filteredPosts);
+        }
