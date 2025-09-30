@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSONPlaceholder - Frontend</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            background-color: #eee;
+            flex: 1;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .tab:hover {
+            background-color: #ddd;
+        }
+        
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        
+        button {
+            padding: 6px 12px;
+            margin: 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+        
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #f57c00;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSONPlaceholder - Frontend</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('users')">👥 Usuarios</div>
+        <div class="tab" onclick="showTab('posts')">📝 Posts</div>
+        <div class="tab" onclick="showTab('comments')">💬 Comentarios</div>
+    </div>
+    
+    <!-- Pestaña de Usuarios -->
+    <div id="users-tab" class="tab-content active">
+        <h2>👥 Gestión de Usuarios</h2>
+        <div id="users-content">
+            <!-- Contenido cargado por JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Pestaña de Posts -->
+    <div id="posts-tab" class="tab-content">
+        <h2>📝 Gestión de Posts</h2>
+        <div id="posts-content">
+            <!-- Contenido cargado por JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Pestaña de Comentarios -->
+    <div id="comments-tab" class="tab-content">
+        <h2>💬 Gestión de Comentarios</h2>
+        <div id="comments-content">
+            <!-- Contenido cargado por JavaScript -->
+        </div>
+    </div>
