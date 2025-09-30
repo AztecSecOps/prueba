@@ -600,3 +600,301 @@
             );
             displayPosts(filteredPosts);
         }
+    <script>
+        
+        // Cargar comentarios desde la API
+        async function loadComments() {
+            try {
+                showLoading('comments');
+                const response = await fetch(API_URL + '/comments');
+                comments = await response.json();
+                displayComments();
+            } catch (error) {
+                showError('comments', 'Error al cargar comentarios: ' + error.message);
+            }
+        }
+        
+        // Mostrar comentarios
+        function displayComments(commentList = comments) {
+            const container = document.getElementById('comments-content');
+            
+            let html = `
+                <div class="section-header">
+                    <button class="btn-primary" onclick="openCommentModal()">➕ Agregar Comentario</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Post</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            commentList.forEach(comment => {
+                const post = posts.find(p => p.id === comment.postId);
+                const postTitle = post ? (post.title.length > 50 ? post.title.substring(0, 50) + '...' : post.title) : 'Desconocido';
+                
+                html += `
+                    <tr>
+                        <td>${comment.id}</td>
+                        <td>${comment.name}</td>
+                        <td>${comment.email}</td>
+                        <td>${postTitle}</td>
+                        <td>
+                            <button class="btn-primary" onclick="editComment(${comment.id})">✏️ Editar</button>
+                            <button class="btn-danger" onclick="deleteComment(${comment.id})">🗑️ Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // Ver comentarios de un post
+        async function viewPostComments(postId) {
+            try {
+                const response = await fetch(API_URL + '/posts/' + postId + '/comments');
+                const postComments = await response.json();
+                
+                const postsContent = document.getElementById('posts-content');
+                let html = postsContent.innerHTML;
+                
+                html += `
+                    <div class="comments-section">
+                        <h3>💬 Comentarios del Post</h3>
+                        <div id="comments-list">
+                `;
+                
+                if (postComments.length === 0) {
+                    html += '<p class="loading">No hay comentarios para este post</p>';
+                } else {
+                    postComments.forEach(comment => {
+                        html += `
+                            <div class="comment">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.name}</span>
+                                    <span class="comment-email">${comment.email}</span>
+                                </div>
+                                <div class="comment-body">${comment.body}</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += '</div></div>';
+                postsContent.innerHTML = html;
+            } catch (error) {
+                showError('posts', 'Error al cargar comentarios: ' + error.message);
+            }
+        }
+        
+        // Ver posts de un usuario
+        function viewUserPosts(userId) {
+            // Cambiar a la pestaña de posts
+            showTab('posts');
+            
+            // Filtrar posts por usuario
+            const userPosts = posts.filter(post => post.userId === userId);
+            displayPosts(userPosts);
+            
+            // Establecer el término de búsqueda
+            document.getElementById('post-search').value = `Usuario: ${userId}`;
+        }
+        
+        // Funciones para mostrar estados
+        function showLoading(section) {
+            const container = document.getElementById(section + '-content');
+            container.innerHTML = '<div class="loading">⏳ Cargando ' + section + '...</div>';
+        }
+        
+        function showError(section, message) {
+            const container = document.getElementById(section + '-content');
+            container.innerHTML = '<div class="error">❌ ' + message + '</div>';
+        }
+        
+        // Funciones para abrir modales
+        function openUserModal(userId = null) {
+            const modal = document.getElementById('user-modal');
+            const title = document.getElementById('user-modal-title');
+            
+            if (userId) {
+                title.textContent = '✏️ Editar Usuario';
+                const user = users.find(u => u.id === userId);
+                document.getElementById('user-id').value = user.id;
+                document.getElementById('user-name').value = user.name;
+                document.getElementById('user-email').value = user.email;
+                document.getElementById('user-phone').value = user.phone;
+                document.getElementById('user-city').value = user.address.city;
+            } else {
+                title.textContent = '➕ Agregar Usuario';
+                document.getElementById('user-form').reset();
+                document.getElementById('user-id').value = '';
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function openPostModal(postId = null) {
+            const modal = document.getElementById('post-modal');
+            const title = document.getElementById('post-modal-title');
+            const userSelect = document.getElementById('post-user');
+            
+            // Cargar usuarios en el select
+            userSelect.innerHTML = '<option value="">Seleccionar usuario...</option>';
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = user.name;
+                userSelect.appendChild(option);
+            });
+            
+            if (postId) {
+                title.textContent = '✏️ Editar Post';
+                const post = posts.find(p => p.id === postId);
+                document.getElementById('post-id').value = post.id;
+                document.getElementById('post-title').value = post.title;
+                document.getElementById('post-body').value = post.body;
+                document.getElementById('post-user').value = post.userId;
+            } else {
+                title.textContent = '➕ Agregar Post';
+                document.getElementById('post-form').reset();
+                document.getElementById('post-id').value = '';
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function openCommentModal(commentId = null) {
+            const modal = document.getElementById('comment-modal');
+            const title = document.getElementById('comment-modal-title');
+            const postSelect = document.getElementById('comment-post');
+            
+            // Cargar posts en el select
+            postSelect.innerHTML = '<option value="">Seleccionar post...</option>';
+            posts.forEach(post => {
+                const option = document.createElement('option');
+                option.value = post.id;
+                option.textContent = post.title.length > 50 ? post.title.substring(0, 50) + '...' : post.title;
+                postSelect.appendChild(option);
+            });
+            
+            if (commentId) {
+                title.textContent = '✏️ Editar Comentario';
+                const comment = comments.find(c => c.id === commentId);
+                document.getElementById('comment-id').value = comment.id;
+                document.getElementById('comment-name').value = comment.name;
+                document.getElementById('comment-email').value = comment.email;
+                document.getElementById('comment-body').value = comment.body;
+                document.getElementById('comment-post').value = comment.postId;
+            } else {
+                title.textContent = '➕ Agregar Comentario';
+                document.getElementById('comment-form').reset();
+                document.getElementById('comment-id').value = '';
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Funciones para cerrar modales
+        function closeUserModal() {
+            document.getElementById('user-modal').style.display = 'none';
+        }
+        
+        function closePostModal() {
+            document.getElementById('post-modal').style.display = 'none';
+        }
+        
+        function closeCommentModal() {
+            document.getElementById('comment-modal').style.display = 'none';
+        }
+        
+        // Funciones de edición
+        function editUser(userId) {
+            openUserModal(userId);
+        }
+        
+        function editPost(postId) {
+            openPostModal(postId);
+        }
+        
+        function editComment(commentId) {
+            openCommentModal(commentId);
+        }
+        
+        // Funciones de eliminación
+        function deleteUser(userId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+                alert('✅ Usuario eliminado (simulado)');
+                loadUsers();
+            }
+        }
+        
+        function deletePost(postId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este post?')) {
+                alert('✅ Post eliminado (simulado)');
+                loadPosts();
+            }
+        }
+        
+        function deleteComment(commentId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este comentario?')) {
+                alert('✅ Comentario eliminado (simulado)');
+                loadComments();
+            }
+        }
+        
+        // Manejo de formularios
+        document.getElementById('user-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userId = document.getElementById('user-id').value;
+            
+            if (userId) {
+                alert('✅ Usuario actualizado (simulado)');
+            } else {
+                alert('✅ Usuario creado (simulado)');
+            }
+            
+            closeUserModal();
+            loadUsers();
+        });
+        
+        document.getElementById('post-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const postId = document.getElementById('post-id').value;
+            
+            if (postId) {
+                alert('✅ Post actualizado (simulado)');
+            } else {
+                alert('✅ Post creado (simulado)');
+            }
+            
+            closePostModal();
+            loadPosts();
+        });
+        
+        document.getElementById('comment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const commentId = document.getElementById('comment-id').value;
+            
+            if (commentId) {
+                alert('✅ Comentario actualizado (simulado)');
+            } else {
+                alert('✅ Comentario creado (simulado)');
+            }
+            
+            closeCommentModal();
+            loadComments();
+        });
+        
+        // Cargar datos iniciales
+        loadUsers();
+    </script>
+</body>
+</html>
