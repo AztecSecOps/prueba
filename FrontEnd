@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSONPlaceholder - Frontend</title>
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             max-width: 1000px;
@@ -17,7 +16,6 @@
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 30px;
         }
         
         .tabs {
@@ -26,20 +24,12 @@
             background-color: white;
             border-radius: 5px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         .tab {
-            padding: 12px 20px;
+            padding: 10px 20px;
             cursor: pointer;
             background-color: #eee;
-            flex: 1;
-            text-align: center;
-            transition: background-color 0.3s;
-        }
-        
-        .tab:hover {
-            background-color: #ddd;
         }
         
         .tab.active {
@@ -53,7 +43,6 @@
             padding: 20px;
             border-radius: 5px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         .tab-content.active {
@@ -68,31 +57,24 @@
         
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 8px;
             text-align: left;
         }
         
         th {
             background-color: #f2f2f2;
-            font-weight: bold;
         }
         
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
         
-        tr:hover {
-            background-color: #f0f0f0;
-        }
-        
         button {
-            padding: 6px 12px;
+            padding: 5px 10px;
             margin: 2px;
             cursor: pointer;
             border: none;
             border-radius: 3px;
-            font-size: 14px;
-            transition: background-color 0.3s;
         }
         
         .btn-primary {
@@ -100,17 +82,9 @@
             color: white;
         }
         
-        .btn-primary:hover {
-            background-color: #45a049;
-        }
-        
         .btn-danger {
             background-color: #f44336;
             color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: #d32f2f;
         }
         
         .btn-warning {
@@ -118,161 +92,11 @@
             color: white;
         }
         
-        .btn-warning:hover {
-            background-color: #f57c00;
-        }
-    </style>
-</head>
-<body>
-    <h1>JSONPlaceholder - Frontend</h1>
-    
-    <div class="tabs">
-        <div class="tab active" onclick="showTab('users')">👥 Usuarios</div>
-        <div class="tab" onclick="showTab('posts')">📝 Posts</div>
-        <div class="tab" onclick="showTab('comments')">💬 Comentarios</div>
-    </div>
-    
-    <!-- Pestaña de Usuarios -->
-    <div id="users-tab" class="tab-content active">
-        <h2>👥 Gestión de Usuarios</h2>
-        <div id="users-content">
-            <!-- Contenido cargado por JavaScript -->
-        </div>
-    </div>
-    
-    <!-- Pestaña de Posts -->
-    <div id="posts-tab" class="tab-content">
-        <h2>📝 Gestión de Posts</h2>
-        <div id="posts-content">
-            <!-- Contenido cargado por JavaScript -->
-        </div>
-    </div>
-    
-    <!-- Pestaña de Comentarios -->
-    <div id="comments-tab" class="tab-content">
-        <h2>💬 Gestión de Comentarios</h2>
-        <div id="comments-content">
-            <!-- Contenido cargado por JavaScript -->
-        </div>
-    </div>
-    
-    <!-- Modal para Usuarios -->
-    <div id="user-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="user-modal-title">➕ Agregar Usuario</h2>
-                <span class="close" onclick="closeUserModal()">&times;</span>
-            </div>
-            <form id="user-form">
-                <input type="hidden" id="user-id">
-                <div class="form-group">
-                    <label for="user-name">📛 Nombre:</label>
-                    <input type="text" id="user-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="user-email">📧 Email:</label>
-                    <input type="email" id="user-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="user-phone">📞 Teléfono:</label>
-                    <input type="text" id="user-phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="user-city">🏙️ Ciudad:</label>
-                    <input type="text" id="user-city" required>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">💾 Guardar</button>
-                    <button type="button" class="btn-danger" onclick="closeUserModal()">❌ Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal para Posts -->
-    <div id="post-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="post-modal-title">➕ Agregar Post</h2>
-                <span class="close" onclick="closePostModal()">&times;</span>
-            </div>
-            <form id="post-form">
-                <input type="hidden" id="post-id">
-                <div class="form-group">
-                    <label for="post-title">📰 Título:</label>
-                    <input type="text" id="post-title" required>
-                </div>
-                <div class="form-group">
-                    <label for="post-body">📄 Contenido:</label>
-                    <textarea id="post-body" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="post-user">👤 Usuario:</label>
-                    <select id="post-user" required>
-                        <option value="">Seleccionar usuario...</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">💾 Guardar</button>
-                    <button type="button" class="btn-danger" onclick="closePostModal()">❌ Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal para Comentarios -->
-    <div id="comment-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="comment-modal-title">➕ Agregar Comentario</h2>
-                <span class="close" onclick="closeCommentModal()">&times;</span>
-            </div>
-            <form id="comment-form">
-                <input type="hidden" id="comment-id">
-                <div class="form-group">
-                    <label for="comment-name">📛 Nombre:</label>
-                    <input type="text" id="comment-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="comment-email">📧 Email:</label>
-                    <input type="email" id="comment-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="comment-body">💬 Comentario:</label>
-                    <textarea id="comment-body" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="comment-post">📝 Post:</label>
-                    <select id="comment-post" required>
-                        <option value="">Seleccionar post...</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">💾 Guardar</button>
-                    <button type="button" class="btn-danger" onclick="closeCommentModal()">❌ Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <style>
         .search-box {
             margin-bottom: 15px;
-            padding: 10px;
+            padding: 8px;
             width: 100%;
             box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
         
         .form-group {
@@ -282,8 +106,6 @@
         label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
         }
         
         input, textarea, select {
@@ -291,20 +113,7 @@
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
+            border-radius: 3px;
         }
         
         .modal {
@@ -317,120 +126,192 @@
             background-color: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
         }
         
         .modal-content {
             background-color: white;
-            padding: 25px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 5px;
             width: 90%;
             max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .modal-header h2 {
-            margin: 0;
-            color: #333;
+            margin-bottom: 15px;
         }
         
         .close {
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
-            color: #777;
-        }
-        
-        .close:hover {
-            color: #333;
         }
         
         .comments-section {
-            margin-top: 25px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 15px;
             background-color: #f9f9f9;
-            border-radius: 8px;
-            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
         }
         
         .comment {
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 10px;
+            margin-bottom: 10px;
             background-color: white;
-            border-radius: 6px;
+            border-radius: 3px;
             border-left: 3px solid #4CAF50;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .comment-author {
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        
-        .comment-email {
-            color: #666;
-        }
-        
-        .comment-body {
-            font-style: italic;
-            color: #444;
-            line-height: 1.4;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .error {
-            background-color: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            border-left: 4px solid #f44336;
-        }
-        
-        @media (max-width: 768px) {
-            .section-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-            }
         }
     </style>
+</head>
+<body>
+    <h1>JSONPlaceholder - Frontend  </h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('users')">Usuarios</div>
+        <div class="tab" onclick="showTab('posts')">Posts</div>
+        <div class="tab" onclick="showTab('comments')">Comentarios</div>
+    </div>
+    
+    <!-- Pestaña de Usuarios -->
+    <div id="users-tab" class="tab-content active">
+        <h2>Usuarios</h2>
+        <input type="text" class="search-box" id="user-search" placeholder="Buscar usuario..." onkeyup="searchUsers()">
+        <button class="btn-primary" onclick="openUserModal()">Agregar Usuario</button>
+        <div id="users-table-container">
+            <!-- Aquí se cargará la tabla de usuarios -->
+        </div>
+    </div>
+    
+    <!-- Pestaña de Posts -->
+    <div id="posts-tab" class="tab-content">
+        <h2>Posts</h2>
+        <input type="text" class="search-box" id="post-search" placeholder="Buscar post..." onkeyup="searchPosts()">
+        <button class="btn-primary" onclick="openPostModal()">Agregar Post</button>
+        <div id="posts-table-container">
+            <!-- Aquí se cargará la tabla de posts -->
+        </div>
+        <div id="comments-section" class="comments-section" style="display: none;">
+            <h3>Comentarios del Post</h3>
+            <div id="comments-list">
+                <!-- Aquí se cargarán los comentarios -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pestaña de Comentarios -->
+    <div id="comments-tab" class="tab-content">
+        <h2>Comentarios</h2>
+        <button class="btn-primary" onclick="openCommentModal()">Agregar Comentario</button>
+        <div id="comments-table-container">
+            <!-- Aquí se cargará la tabla de comentarios -->
+        </div>
+    </div>
+    
+    <!-- Modal para Usuarios -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="user-modal-title">Agregar Usuario</h2>
+                <span class="close" onclick="closeUserModal()">&times;</span>
+            </div>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <div class="form-group">
+                    <label for="user-name">Nombre:</label>
+                    <input type="text" id="user-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email:</label>
+                    <input type="email" id="user-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-phone">Teléfono:</label>
+                    <input type="text" id="user-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-city">Ciudad:</label>
+                    <input type="text" id="user-city" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-danger" onclick="closeUserModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para Posts -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="post-modal-title">Agregar Post</h2>
+                <span class="close" onclick="closePostModal()">&times;</span>
+            </div>
+            <form id="post-form">
+                <input type="hidden" id="post-id">
+                <div class="form-group">
+                    <label for="post-title">Título:</label>
+                    <input type="text" id="post-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="post-body">Contenido:</label>
+                    <textarea id="post-body" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="post-user">Usuario:</label>
+                    <select id="post-user" required>
+                        <!-- Las opciones se cargarán con JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-danger" onclick="closePostModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para Comentarios -->
+    <div id="comment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="comment-modal-title">Agregar Comentario</h2>
+                <span class="close" onclick="closeCommentModal()">&times;</span>
+            </div>
+            <form id="comment-form">
+                <input type="hidden" id="comment-id">
+                <div class="form-group">
+                    <label for="comment-name">Nombre:</label>
+                    <input type="text" id="comment-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="comment-email">Email:</label>
+                    <input type="email" id="comment-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="comment-body">Comentario:</label>
+                    <textarea id="comment-body" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="comment-post">Post:</label>
+                    <select id="comment-post" required>
+                        <!-- Las opciones se cargarán con JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-danger" onclick="closeCommentModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Lógica principal - Persona A
+        // URL base de la API
         const API_URL = 'https://jsonplaceholder.typicode.com';
         
-        // Variables globales
+        // Variables para almacenar datos
         let users = [];
         let posts = [];
         let comments = [];
@@ -453,55 +334,32 @@
             // Marcar la pestaña como activa
             event.target.classList.add('active');
             
-            // Cargar datos según la pestaña
-            switch(tabName) {
-                case 'users':
-                    if (users.length === 0) loadUsers();
-                    break;
-                case 'posts':
-                    if (posts.length === 0) loadPosts();
-                    break;
-                case 'comments':
-                    if (comments.length === 0) loadComments();
-                    break;
+            // Cargar datos si es necesario
+            if (tabName === 'users' && users.length === 0) {
+                loadUsers();
+            } else if (tabName === 'posts' && posts.length === 0) {
+                loadPosts();
+            } else if (tabName === 'comments' && comments.length === 0) {
+                loadComments();
             }
         }
         
         // Cargar usuarios desde la API
         async function loadUsers() {
             try {
-                showLoading('users');
                 const response = await fetch(API_URL + '/users');
                 users = await response.json();
-                displayUsers();
+                displayUsers(users);
             } catch (error) {
-                showError('users', 'Error al cargar usuarios: ' + error.message);
+                console.error('Error al cargar usuarios:', error);
+                document.getElementById('users-table-container').innerHTML = '<p>Error al cargar usuarios</p>';
             }
         }
         
-        // Mostrar usuarios
-        function displayUsers(userList = users) {
-            const container = document.getElementById('users-content');
-            
-            let html = `
-                <div class="section-header">
-                    <input type="text" class="search-box" id="user-search" 
-                           placeholder="🔍 Buscar por nombre, email o ciudad..." 
-                           onkeyup="searchUsers()">
-                    <button class="btn-primary" onclick="openUserModal()">➕ Agregar Usuario</button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Ciudad</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+        // Mostrar usuarios en la tabla
+        function displayUsers(userList) {
+            const container = document.getElementById('users-table-container');
+            let html = '<table><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Ciudad</th><th>Acciones</th></tr>';
             
             userList.forEach(user => {
                 html += `
@@ -511,15 +369,15 @@
                         <td>${user.email}</td>
                         <td>${user.address.city}</td>
                         <td>
-                            <button class="btn-primary" onclick="editUser(${user.id})">✏️ Editar</button>
-                            <button class="btn-warning" onclick="viewUserPosts(${user.id})">📝 Posts</button>
-                            <button class="btn-danger" onclick="deleteUser(${user.id})">🗑️ Eliminar</button>
+                            <button class="btn-primary" onclick="editUser(${user.id})">Editar</button>
+                            <button class="btn-warning" onclick="viewUserPosts(${user.id})">Ver Posts</button>
+                            <button class="btn-danger" onclick="deleteUser(${user.id})">Eliminar</button>
                         </td>
                     </tr>
                 `;
             });
             
-            html += '</tbody></table>';
+            html += '</table>';
             container.innerHTML = html;
         }
         
@@ -537,37 +395,19 @@
         // Cargar posts desde la API
         async function loadPosts() {
             try {
-                showLoading('posts');
                 const response = await fetch(API_URL + '/posts');
                 posts = await response.json();
-                displayPosts();
+                displayPosts(posts);
             } catch (error) {
-                showError('posts', 'Error al cargar posts: ' + error.message);
+                console.error('Error al cargar posts:', error);
+                document.getElementById('posts-table-container').innerHTML = '<p>Error al cargar posts</p>';
             }
         }
         
-        // Mostrar posts
-        function displayPosts(postList = posts) {
-            const container = document.getElementById('posts-content');
-            
-            let html = `
-                <div class="section-header">
-                    <input type="text" class="search-box" id="post-search" 
-                           placeholder="🔍 Buscar por título o contenido..." 
-                           onkeyup="searchPosts()">
-                    <button class="btn-primary" onclick="openPostModal()">➕ Agregar Post</button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Usuario</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+        // Mostrar posts en la tabla
+        function displayPosts(postList) {
+            const container = document.getElementById('posts-table-container');
+            let html = '<table><tr><th>ID</th><th>Título</th><th>Usuario</th><th>Acciones</th></tr>';
             
             postList.forEach(post => {
                 const user = users.find(u => u.id === post.userId);
@@ -579,15 +419,15 @@
                         <td>${post.title}</td>
                         <td>${userName}</td>
                         <td>
-                            <button class="btn-primary" onclick="editPost(${post.id})">✏️ Editar</button>
-                            <button class="btn-warning" onclick="viewPostComments(${post.id})">💬 Comentarios</button>
-                            <button class="btn-danger" onclick="deletePost(${post.id})">🗑️ Eliminar</button>
+                            <button class="btn-primary" onclick="editPost(${post.id})">Editar</button>
+                            <button class="btn-warning" onclick="viewPostComments(${post.id})">Ver Comentarios</button>
+                            <button class="btn-danger" onclick="deletePost(${post.id})">Eliminar</button>
                         </td>
                     </tr>
                 `;
             });
             
-            html += '</tbody></table>';
+            html += '</table>';
             container.innerHTML = html;
         }
         
@@ -600,44 +440,27 @@
             );
             displayPosts(filteredPosts);
         }
-    <script>
         
         // Cargar comentarios desde la API
         async function loadComments() {
             try {
-                showLoading('comments');
                 const response = await fetch(API_URL + '/comments');
                 comments = await response.json();
-                displayComments();
+                displayComments(comments);
             } catch (error) {
-                showError('comments', 'Error al cargar comentarios: ' + error.message);
+                console.error('Error al cargar comentarios:', error);
+                document.getElementById('comments-table-container').innerHTML = '<p>Error al cargar comentarios</p>';
             }
         }
         
-        // Mostrar comentarios
-        function displayComments(commentList = comments) {
-            const container = document.getElementById('comments-content');
-            
-            let html = `
-                <div class="section-header">
-                    <button class="btn-primary" onclick="openCommentModal()">➕ Agregar Comentario</button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Post</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+        // Mostrar comentarios en la tabla
+        function displayComments(commentList) {
+            const container = document.getElementById('comments-table-container');
+            let html = '<table><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Post</th><th>Acciones</th></tr>';
             
             commentList.forEach(comment => {
                 const post = posts.find(p => p.id === comment.postId);
-                const postTitle = post ? (post.title.length > 50 ? post.title.substring(0, 50) + '...' : post.title) : 'Desconocido';
+                const postTitle = post ? post.title : 'Desconocido';
                 
                 html += `
                     <tr>
@@ -646,14 +469,14 @@
                         <td>${comment.email}</td>
                         <td>${postTitle}</td>
                         <td>
-                            <button class="btn-primary" onclick="editComment(${comment.id})">✏️ Editar</button>
-                            <button class="btn-danger" onclick="deleteComment(${comment.id})">🗑️ Eliminar</button>
+                            <button class="btn-primary" onclick="editComment(${comment.id})">Editar</button>
+                            <button class="btn-danger" onclick="deleteComment(${comment.id})">Eliminar</button>
                         </td>
                     </tr>
                 `;
             });
             
-            html += '</tbody></table>';
+            html += '</table>';
             container.innerHTML = html;
         }
         
@@ -663,35 +486,27 @@
                 const response = await fetch(API_URL + '/posts/' + postId + '/comments');
                 const postComments = await response.json();
                 
-                const postsContent = document.getElementById('posts-content');
-                let html = postsContent.innerHTML;
-                
-                html += `
-                    <div class="comments-section">
-                        <h3>💬 Comentarios del Post</h3>
-                        <div id="comments-list">
-                `;
+                const commentsList = document.getElementById('comments-list');
+                let html = '';
                 
                 if (postComments.length === 0) {
-                    html += '<p class="loading">No hay comentarios para este post</p>';
+                    html = '<p>No hay comentarios para este post</p>';
                 } else {
                     postComments.forEach(comment => {
                         html += `
                             <div class="comment">
-                                <div class="comment-header">
-                                    <span class="comment-author">${comment.name}</span>
-                                    <span class="comment-email">${comment.email}</span>
-                                </div>
-                                <div class="comment-body">${comment.body}</div>
+                                <p><strong>${comment.name}</strong> (${comment.email})</p>
+                                <p>${comment.body}</p>
                             </div>
                         `;
                     });
                 }
                 
-                html += '</div></div>';
-                postsContent.innerHTML = html;
+                commentsList.innerHTML = html;
+                document.getElementById('comments-section').style.display = 'block';
             } catch (error) {
-                showError('posts', 'Error al cargar comentarios: ' + error.message);
+                console.error('Error al cargar comentarios:', error);
+                document.getElementById('comments-list').innerHTML = '<p>Error al cargar comentarios</p>';
             }
         }
         
@@ -708,24 +523,14 @@
             document.getElementById('post-search').value = `Usuario: ${userId}`;
         }
         
-        // Funciones para mostrar estados
-        function showLoading(section) {
-            const container = document.getElementById(section + '-content');
-            container.innerHTML = '<div class="loading">⏳ Cargando ' + section + '...</div>';
-        }
-        
-        function showError(section, message) {
-            const container = document.getElementById(section + '-content');
-            container.innerHTML = '<div class="error">❌ ' + message + '</div>';
-        }
-        
         // Funciones para abrir modales
         function openUserModal(userId = null) {
             const modal = document.getElementById('user-modal');
             const title = document.getElementById('user-modal-title');
             
             if (userId) {
-                title.textContent = '✏️ Editar Usuario';
+                title.textContent = 'Editar Usuario';
+                // Cargar datos del usuario
                 const user = users.find(u => u.id === userId);
                 document.getElementById('user-id').value = user.id;
                 document.getElementById('user-name').value = user.name;
@@ -733,7 +538,7 @@
                 document.getElementById('user-phone').value = user.phone;
                 document.getElementById('user-city').value = user.address.city;
             } else {
-                title.textContent = '➕ Agregar Usuario';
+                title.textContent = 'Agregar Usuario';
                 document.getElementById('user-form').reset();
                 document.getElementById('user-id').value = '';
             }
@@ -747,7 +552,7 @@
             const userSelect = document.getElementById('post-user');
             
             // Cargar usuarios en el select
-            userSelect.innerHTML = '<option value="">Seleccionar usuario...</option>';
+            userSelect.innerHTML = '';
             users.forEach(user => {
                 const option = document.createElement('option');
                 option.value = user.id;
@@ -756,14 +561,15 @@
             });
             
             if (postId) {
-                title.textContent = '✏️ Editar Post';
+                title.textContent = 'Editar Post';
+                // Cargar datos del post
                 const post = posts.find(p => p.id === postId);
                 document.getElementById('post-id').value = post.id;
                 document.getElementById('post-title').value = post.title;
                 document.getElementById('post-body').value = post.body;
                 document.getElementById('post-user').value = post.userId;
             } else {
-                title.textContent = '➕ Agregar Post';
+                title.textContent = 'Agregar Post';
                 document.getElementById('post-form').reset();
                 document.getElementById('post-id').value = '';
             }
@@ -777,16 +583,17 @@
             const postSelect = document.getElementById('comment-post');
             
             // Cargar posts en el select
-            postSelect.innerHTML = '<option value="">Seleccionar post...</option>';
+            postSelect.innerHTML = '';
             posts.forEach(post => {
                 const option = document.createElement('option');
                 option.value = post.id;
-                option.textContent = post.title.length > 50 ? post.title.substring(0, 50) + '...' : post.title;
+                option.textContent = post.title;
                 postSelect.appendChild(option);
             });
             
             if (commentId) {
-                title.textContent = '✏️ Editar Comentario';
+                title.textContent = 'Editar Comentario';
+                // Cargar datos del comentario
                 const comment = comments.find(c => c.id === commentId);
                 document.getElementById('comment-id').value = comment.id;
                 document.getElementById('comment-name').value = comment.name;
@@ -794,7 +601,7 @@
                 document.getElementById('comment-body').value = comment.body;
                 document.getElementById('comment-post').value = comment.postId;
             } else {
-                title.textContent = '➕ Agregar Comentario';
+                title.textContent = 'Agregar Comentario';
                 document.getElementById('comment-form').reset();
                 document.getElementById('comment-id').value = '';
             }
@@ -831,22 +638,22 @@
         // Funciones de eliminación
         function deleteUser(userId) {
             if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-                alert('✅ Usuario eliminado (simulado)');
-                loadUsers();
+                alert('Usuario eliminado (simulado)');
+                loadUsers(); // Recargar la lista
             }
         }
         
         function deletePost(postId) {
             if (confirm('¿Estás seguro de que quieres eliminar este post?')) {
-                alert('✅ Post eliminado (simulado)');
-                loadPosts();
+                alert('Post eliminado (simulado)');
+                loadPosts(); // Recargar la lista
             }
         }
         
         function deleteComment(commentId) {
             if (confirm('¿Estás seguro de que quieres eliminar este comentario?')) {
-                alert('✅ Comentario eliminado (simulado)');
-                loadComments();
+                alert('Comentario eliminado (simulado)');
+                loadComments(); // Recargar la lista
             }
         }
         
@@ -856,9 +663,9 @@
             const userId = document.getElementById('user-id').value;
             
             if (userId) {
-                alert('✅ Usuario actualizado (simulado)');
+                alert('Usuario actualizado (simulado)');
             } else {
-                alert('✅ Usuario creado (simulado)');
+                alert('Usuario creado (simulado)');
             }
             
             closeUserModal();
@@ -870,9 +677,9 @@
             const postId = document.getElementById('post-id').value;
             
             if (postId) {
-                alert('✅ Post actualizado (simulado)');
+                alert('Post actualizado (simulado)');
             } else {
-                alert('✅ Post creado (simulado)');
+                alert('Post creado (simulado)');
             }
             
             closePostModal();
@@ -884,9 +691,9 @@
             const commentId = document.getElementById('comment-id').value;
             
             if (commentId) {
-                alert('✅ Comentario actualizado (simulado)');
+                alert('Comentario actualizado (simulado)');
             } else {
-                alert('✅ Comentario creado (simulado)');
+                alert('Comentario creado (simulado)');
             }
             
             closeCommentModal();
