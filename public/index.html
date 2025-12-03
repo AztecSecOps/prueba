@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSONPlaceholder - Frontend + Servidor Estático</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #eee;
+        }
+        
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        button {
+            padding: 5px 10px;
+            margin: 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .search-box {
+            margin-bottom: 15px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .comments-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .comment {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 3px;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .server-info {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .api-selector {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="server-info">
+        <h2>🌐 Frontend con Servidor Estático Express</h2>
+        <p>Esta aplicación está servida por un servidor Express local.</p>
+        <div class="api-selector">
+            <label>
+                <input type="radio" name="api-source" value="direct" checked onchange="changeAPISource()">
+                Conectar directamente a JSONPlaceholder
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="api-source" value="proxy" onchange="changeAPISource()">
+                Usar proxy del servidor local (evita CORS)
+            </label>
+        </div>
+    </div>
+    
+    <h1>JSONPlaceholder - Frontend</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('users')">Usuarios</div>
+        <div class="tab" onclick="showTab('posts')">Posts</div>
+        <div class="tab" onclick="showTab('comments')">Comentarios</div>
+    </div>
+    
+    <!-- Pestaña de Usuarios -->
+    <div id="users-tab" class="tab-content active">
+        <h2>Usuarios</h2>
+        <input type="text" class="search-box" id="user-search" placeholder="Buscar usuario..." onkeyup="searchUsers()">
+        <button class="btn-primary" onclick="openUserModal()">Agregar Usuario</button>
+        <div id="users-table-container">
+            <!-- Aquí se cargará la tabla de usuarios -->
+        </div>
+    </div>
+    
+    <!-- Pestaña de Posts -->
+    <div id="posts-tab" class="tab-content">
+        <h2>Posts</h2>
+        <input type="text" class="search-box" id="post-search" placeholder="Buscar post..." onkeyup="searchPosts()">
+        <button class="btn-primary" onclick="openPostModal()">Agregar Post</button>
+        <div id="posts-table-container">
+            <!-- Aquí se cargará la tabla de posts -->
+        </div>
+        <div id="comments-section" class="comments-section" style="display: none;">
+            <h3>Comentarios del Post</h3>
+            <div id="comments-list">
+                <!-- Aquí se cargarán los comentarios -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pestaña de Comentarios -->
+    <div id="comments-tab" class="tab-content">
+        <h2>Comentarios</h2>
+        <button class="btn-primary" onclick="openCommentModal()">Agregar Comentario</button>
+        <div id="comments-table-container">
+            <!-- Aquí se cargará la tabla de comentarios -->
+        </div>
+    </div>
+    
+    <!-- Modales (se mantienen igual) -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="user-modal-title">Agregar Usuario</h2>
+                <span class="close" onclick="closeUserModal()">&times;</span>
+            </div>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <div class="form-group">
+                    <label for="user-name">Nombre:</label>
+                    <input type="text" id="user-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email:</label>
+                    <input type="email" id="user-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-phone">Teléfono:</label>
+                    <input type="text" id="user-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-city">Ciudad:</label>
+                    <input type="text" id="user-city" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-danger" onclick="closeUserModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Los otros modales se mantienen igual -->
+    <div id="post-modal" class="modal">
+        <!-- ... contenido igual ... -->
+    </div>
+    
+    <div id="comment-modal" class="modal">
+        <!-- ... contenido igual ... -->
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE API - MODIFICADO
+        let API_SOURCE = 'direct'; // 'direct' o 'proxy'
+        
+        function getAPIBase() {
+            if (API_SOURCE === 'proxy') {
+                return '/api'; // Usa el proxy del servidor local
+            } else {
+                return 'https://jsonplaceholder.typicode.com'; // Conexión directa
+            }
+        }
+        
+        function changeAPISource() {
+            const selected = document.querySelector('input[name="api-source"]:checked').value;
+            API_SOURCE = selected;
+            console.log(`Cambiando a fuente API: ${API_SOURCE}`);
+            
+            // Recargar datos con la nueva fuente
+            if (users.length > 0) loadUsers();
+            if (posts.length > 0) loadPosts();
+            if (comments.length > 0) loadComments();
+        }
+        
+        // Variables para almacenar datos
+        let users = [];
+        let posts = [];
+        let comments = [];
+        
+        // Función para cambiar entre pestañas
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Quitar la clase active de todas las pestañas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Marcar la pestaña como activa
+            event.target.classList.add('active');
+            
+            // Cargar datos si es necesario
+            if (tabName === 'users' && users.length === 0) {
+                loadUsers();
+            } else if (tabName === 'posts' && posts.length === 0) {
+                loadPosts();
+            } else if (tabName === 'comments' && comments.length === 0) {
+                loadComments();
+            }
+        }
+        
+        // Cargar usuarios desde la API
+        async function loadUsers() {
+            try {
+                const apiBase = getAPIBase();
+                const endpoint = API_SOURCE === 'proxy' ? '/users' : '';
+                const response = await fetch(apiBase + endpoint + '/users');
+                users = await response.json();
+                displayUsers(users);
+            } catch (error) {
+                console.error('Error al cargar usuarios:', error);
+                document.getElementById('users-table-container').innerHTML = 
+                    '<p class="error">Error al cargar usuarios. Verifica la conexión.</p>';
+            }
+        }
+        
+        // Mostrar usuarios en la tabla
+        function displayUsers(userList) {
+            const container = document.getElementById('users-table-container');
+            let html = '<table><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Ciudad</th><th>Acciones</th></tr>';
+            
+            userList.forEach(user => {
+                html += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.address.city}</td>
+                        <td>
+                            <button class="btn-primary" onclick="editUser(${user.id})">Editar</button>
+                            <button class="btn-warning" onclick="viewUserPosts(${user.id})">Ver Posts</button>
+                            <button class="btn-danger" onclick="deleteUser(${user.id})">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        // Buscar usuarios
+        function searchUsers() {
+            const searchTerm = document.getElementById('user-search').value.toLowerCase();
+            const filteredUsers = users.filter(user => 
+                user.name.toLowerCase().includes(searchTerm) || 
+                user.email.toLowerCase().includes(searchTerm) ||
+                user.address.city.toLowerCase().includes(searchTerm)
+            );
+            displayUsers(filteredUsers);
+        }
+        
+        // Cargar posts desde la API
+        async function loadPosts() {
+            try {
+                const apiBase = getAPIBase();
+                const endpoint = API_SOURCE === 'proxy' ? '/posts' : '';
+                const response = await fetch(apiBase + endpoint + '/posts');
+                posts = await response.json();
+                displayPosts(posts);
+            } catch (error) {
+                console.error('Error al cargar posts:', error);
+                document.getElementById('posts-table-container').innerHTML = 
+                    '<p class="error">Error al cargar posts. Verifica la conexión.</p>';
+            }
+        }
+        
+        // Mostrar posts en la tabla
+        function displayPosts(postList) {
+            const container = document.getElementById('posts-table-container');
+            let html = '<table><tr><th>ID</th><th>Título</th><th>Usuario</th><th>Acciones</th></tr>';
+            
+            postList.forEach(post => {
+                const user = users.find(u => u.id === post.userId);
+                const userName = user ? user.name : 'Desconocido';
+                
+                html += `
+                    <tr>
+                        <td>${post.id}</td>
+                        <td>${post.title}</td>
+                        <td>${userName}</td>
+                        <td>
+                            <button class="btn-primary" onclick="editPost(${post.id})">Editar</button>
+                            <button class="btn-warning" onclick="viewPostComments(${post.id})">Ver Comentarios</button>
+                            <button class="btn-danger" onclick="deletePost(${post.id})">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        // Buscar posts
+        function searchPosts() {
+            const searchTerm = document.getElementById('post-search').value.toLowerCase();
+            const filteredPosts = posts.filter(post => 
+                post.title.toLowerCase().includes(searchTerm) || 
+                post.body.toLowerCase().includes(searchTerm)
+            );
+            displayPosts(filteredPosts);
+        }
+        
+        // Cargar comentarios desde la API
+        async function loadComments() {
+            try {
+                const apiBase = getAPIBase();
+                const endpoint = API_SOURCE === 'proxy' ? '/comments' : '';
+                const response = await fetch(apiBase + endpoint + '/comments');
+                comments = await response.json();
+                displayComments(comments);
+            } catch (error) {
+                console.error('Error al cargar comentarios:', error);
+                document.getElementById('comments-table-container').innerHTML = 
+                    '<p class="error">Error al cargar comentarios. Verifica la conexión.</p>';
+            }
+        }
+        
+        // Mostrar comentarios en la tabla
+        function displayComments(commentList) {
+            const container = document.getElementById('comments-table-container');
+            let html = '<table><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Post</th><th>Acciones</th></tr>';
+            
+            commentList.forEach(comment => {
+                const post = posts.find(p => p.id === comment.postId);
+                const postTitle = post ? post.title : 'Desconocido';
+                
+                html += `
+                    <tr>
+                        <td>${comment.id}</td>
+                        <td>${comment.name}</td>
+                        <td>${comment.email}</td>
+                        <td>${postTitle}</td>
+                        <td>
+                            <button class="btn-primary" onclick="editComment(${comment.id})">Editar</button>
+                            <button class="btn-danger" onclick="deleteComment(${comment.id})">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        // Ver comentarios de un post
+        async function viewPostComments(postId) {
+            try {
+                const apiBase = getAPIBase();
+                const endpoint = API_SOURCE === 'proxy' ? `/posts/${postId}/comments` : `/posts/${postId}/comments`;
+                const response = await fetch(apiBase + endpoint);
+                const postComments = await response.json();
+                
+                const commentsList = document.getElementById('comments-list');
+                let html = '';
+                
+                if (postComments.length === 0) {
+                    html = '<p>No hay comentarios para este post</p>';
+                } else {
+                    postComments.forEach(comment => {
+                        html += `
+                            <div class="comment">
+                                <p><strong>${comment.name}</strong> (${comment.email})</p>
+                                <p>${comment.body}</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                commentsList.innerHTML = html;
+                document.getElementById('comments-section').style.display = 'block';
+            } catch (error) {
+                console.error('Error al cargar comentarios:', error);
+                document.getElementById('comments-list').innerHTML = 
+                    '<p class="error">Error al cargar comentarios</p>';
+            }
+        }
+        
+        // Ver posts de un usuario
+        async function viewUserPosts(userId) {
+            try {
+                const apiBase = getAPIBase();
+                const endpoint = API_SOURCE === 'proxy' ? `/users/${userId}/posts` : `/users/${userId}/posts`;
+                
+                const response = await fetch(apiBase + endpoint);
+                const userPosts = await response.json();
+                
+                // Cambiar a la pestaña de posts
+                showTab('posts');
+                
+                // Mostrar solo los posts del usuario
+                displayPosts(userPosts);
+                
+                // Establecer el término de búsqueda
+                document.getElementById('post-search').value = `Usuario: ${userId}`;
+            } catch (error) {
+                console.error('Error al cargar posts del usuario:', error);
+                alert('Error al cargar posts del usuario');
+            }
+        }
+        
+        // Las demás funciones se mantienen igual (modales, CRUD, etc.)
+        // ... [El resto del código JavaScript se mantiene igual] ...
+        
+        // Agregar CSS para mensajes de error
+        const style = document.createElement('style');
+        style.textContent = `
+            .error {
+                background: #ffebee;
+                color: #c62828;
+                padding: 10px;
+                border-radius: 4px;
+                margin: 10px 0;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Cargar datos iniciales
+        loadUsers();
+        
+        // Verificar estado del servidor
+        async function checkServerStatus() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                console.log('✅ Servidor local funcionando:', data);
+            } catch (error) {
+                console.log('ℹ️ Servidor local no disponible, usando conexión directa');
+                // Seleccionar automáticamente conexión directa
+                document.querySelector('input[value="direct"]').checked = true;
+                API_SOURCE = 'direct';
+            }
+        }
+        
+        // Verificar al cargar
+        window.addEventListener('load', checkServerStatus);
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "jsonplaceholder-frontend-server",
+  "version": "1.0.0",
+  "description": "Servidor estático que sirve frontend para JSONPlaceholder",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5"
+  }
+}
