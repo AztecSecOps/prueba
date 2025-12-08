@@ -412,16 +412,6 @@ Conceptos importantes:
 
     Manejo de dependencias: Cómo usar herramientas de otras personas en nuestro proyecto
 
-Buenas prácticas:
-
-    Separación de responsabilidades: El servidor hace una cosa, el frontend hace otra
-
-    Código organizado: Cada archivo tiene un propósito claro
-
-    Manejo de errores: La aplicación no se "rompe" si algo sale mal
-
-    Experiencia de usuario: Mostrar mensajes claros al usuario
-
     Documentación: Explicar cómo funciona el código
     Código Completo (para referencia)
 server.js completo:
@@ -535,3 +525,4 @@ Este proyecto "Servidor Estático DataFake" es una aplicación web educativa que
     Cómo consumir datos de internet de una API pública
 
     Cómo manejar estados y errores para buena experiencia de usuario
+
