@@ -3,31 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Simple con Fetch</title>
-    <link rel="stylesheet" href="style.css">
+    <title>App con Fetch API</title>
+    <!-- W3.CSS EXCLUSIVO - SIN CSS PROPIO -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* SOLO ESTILOS MUY ESPECÍFICOS */
+        .w3-card-custom {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .tabla-comprimida td, .tabla-comprimida th {
+            padding: 8px 10px;
+            font-size: 14px;
+        }
+        .email-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>App Simple con Fetch API</h1>
+<body class="w3-light-grey">
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="w3-container w3-margin-top">
         
-        <div class="botones">
-            <button onclick="cargarUsuarios()">Cargar Usuarios</button>
-            <button onclick="cargarPosts()">Cargar Posts</button>
-            <button onclick="cargarComentarios()">Cargar Comentarios</button>
-        </div>
-        
-        <div id="mensaje"></div>
-        
-        <div id="contenido">
-            <p>Haz clic en un botón para cargar datos</p>
+        <!-- ENCABEZADO -->
+        <div class="w3-card-4 w3-white w3-card-custom">
+            <header class="w3-container w3-blue">
+                <h1><i class="fas fa-database"></i> Base de comentarios estudiantiles</h1>
+                <p class="w3-small">Consumo de datos usando Fetch API y W3.CSS</p>
+            </header>
+            
+            <div class="w3-container w3-padding-16">
+                <!-- BOTONES -->
+                <div class="w3-bar">
+                    <button class="w3-button w3-green w3-bar-item w3-margin-right" onclick="cargarUsuarios()">
+                        <i class="fas fa-users"></i> Cargar Usuarios
+                    </button>
+                    <button class="w3-button w3-blue w3-bar-item w3-margin-right" onclick="cargarPosts()">
+                        <i class="fas fa-file-alt"></i> Cargar Posts
+                    </button>
+                    <button class="w3-button w3-purple w3-bar-item" onclick="cargarComentarios()">
+                        <i class="fas fa-comments"></i> Cargar Comentarios
+                    </button>
+                </div>
+                
+                <!-- MENSAJES -->
+                <div id="mensaje" class="w3-margin-top"></div>
+                
+                <!-- CONTENIDO DINÁMICO -->
+                <div id="contenido" class="w3-margin-top">
+                    <div class="w3-panel w3-blue w3-leftbar w3-border-blue">
+                        <p><i class="fas fa-info-circle"></i> Haz clic en un botón para cargar datos desde la API</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PIE DE PÁGINA -->
+            <footer class="w3-container w3-light-grey w3-padding-16 w3-center">
+                <p class="w3-small">Proyecto usando Fetch API • W3.CSS • JSONPlaceholder</p>
+            </footer>
         </div>
     </div>
 
     <script>
-        // Mostrar mensaje
+        // Mostrar mensaje con W3.CSS
         function mostrarMensaje(texto, tipo) {
             const mensajeDiv = document.getElementById('mensaje');
-            mensajeDiv.innerHTML = `<div class="mensaje ${tipo}">${texto}</div>`;
+            let clase = 'w3-panel ';
+            
+            switch(tipo) {
+                case 'cargando':
+                    clase += 'w3-blue w3-leftbar w3-border-blue';
+                    break;
+                case 'error':
+                    clase += 'w3-red w3-leftbar w3-border-red';
+                    break;
+                case 'exito':
+                    clase += 'w3-green w3-leftbar w3-border-green';
+                    break;
+            }
+            
+            mensajeDiv.innerHTML = `
+                <div class="${clase}">
+                    <p><i class="fas fa-${tipo === 'cargando' ? 'spinner fa-spin' : tipo === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${texto}</p>
+                </div>
+            `;
         }
         
         // Cargar usuarios
@@ -37,26 +101,42 @@
                 const respuesta = await fetch('/api/users');
                 const usuarios = await respuesta.json();
                 
-                let html = '<h2>Usuarios</h2><table class="tabla">';
-                html += '<tr><th>ID</th><th>Nombre</th><th>Email</th><th>Ciudad</th></tr>';
+                let html = `
+                    <div class="w3-card w3-white w3-margin-top">
+                        <header class="w3-container w3-green">
+                            <h3><i class="fas fa-users"></i> Usuarios (${usuarios.length})</h3>
+                        </header>
+                        <div class="w3-container w3-responsive">
+                            <table class="w3-table-all w3-hoverable tabla-comprimida">
+                                <tr class="w3-green">
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Ciudad</th>
+                                    <th>Compañía</th>
+                                </tr>
+                `;
                 
                 usuarios.forEach(usuario => {
                     html += `
                         <tr>
-                            <td>${usuario.id}</td>
-                            <td>${usuario.name}</td>
-                            <td>${usuario.email}</td>
-                            <td>${usuario.address.city}</td>
+                            <td><span class="w3-badge w3-green">${usuario.id}</span></td>
+                            <td><strong>${usuario.name}</strong><br>
+                                <small class="w3-text-grey">@${usuario.username}</small>
+                            </td>
+                            <td class="email-cell">${usuario.email}</td>
+                            <td>${usuario.address?.city || 'N/A'}</td>
+                            <td>${usuario.company?.name || 'N/A'}</td>
                         </tr>
                     `;
                 });
                 
-                html += '</table>';
+                html += `</table></div></div>`;
                 document.getElementById('contenido').innerHTML = html;
-                mostrarMensaje('Usuarios cargados correctamente', 'exito');
+                mostrarMensaje(`✓ ${usuarios.length} usuarios cargados`, 'exito');
                 
             } catch (error) {
-                mostrarMensaje('Error al cargar usuarios: ' + error.message, 'error');
+                mostrarMensaje(`✗ Error al cargar usuarios: ${error.message}`, 'error');
             }
         }
         
@@ -67,29 +147,48 @@
                 const respuesta = await fetch('/api/posts');
                 const posts = await respuesta.json();
                 
-                let html = '<h2>Posts</h2><table class="tabla">';
-                html += '<tr><th>ID</th><th>Título</th><th>Usuario ID</th></tr>';
+                let html = `
+                    <div class="w3-card w3-white w3-margin-top">
+                        <header class="w3-container w3-blue">
+                            <h3><i class="fas fa-file-alt"></i> Posts (${posts.length})</h3>
+                        </header>
+                        <div class="w3-container w3-responsive">
+                            <table class="w3-table-all w3-hoverable tabla-comprimida">
+                                <tr class="w3-blue">
+                                    <th>ID</th>
+                                    <th>Título</th>
+                                    <th>Usuario ID</th>
+                                    <th>Vista Previa</th>
+                                </tr>
+                `;
                 
-                // Mostrar solo los primeros 10
-                posts.slice(0, 10).forEach(post => {
+                posts.slice(0, 15).forEach(post => {
                     html += `
                         <tr>
-                            <td>${post.id}</td>
-                            <td>${post.title}</td>
+                            <td><span class="w3-badge w3-blue">${post.id}</span></td>
+                            <td><strong>${post.title}</strong></td>
                             <td>${post.userId}</td>
+                            <td><small class="w3-text-grey">${post.body.substring(0, 50)}...</small></td>
                         </tr>
                     `;
                 });
                 
-                html += '</table>';
-                if (posts.length > 10) {
-                    html += `<p>Mostrando 10 de ${posts.length} posts</p>`;
+                html += `</table></div>`;
+                
+                if (posts.length > 15) {
+                    html += `
+                        <div class="w3-container w3-light-grey w3-padding">
+                            <p class="w3-small"><i class="fas fa-info-circle"></i> Mostrando 15 de ${posts.length} posts</p>
+                        </div>
+                    `;
                 }
+                
+                html += `</div>`;
                 document.getElementById('contenido').innerHTML = html;
-                mostrarMensaje('Posts cargados correctamente', 'exito');
+                mostrarMensaje(`✓ ${posts.length} posts cargados`, 'exito');
                 
             } catch (error) {
-                mostrarMensaje('Error al cargar posts: ' + error.message, 'error');
+                mostrarMensaje(`✗ Error al cargar posts: ${error.message}`, 'error');
             }
         }
         
@@ -100,32 +199,58 @@
                 const respuesta = await fetch('/api/comments');
                 const comentarios = await respuesta.json();
                 
-                let html = '<h2>Comentarios</h2><table class="tabla">';
-                html += '<tr><th>ID</th><th>Nombre</th><th>Email</th><th>Post ID</th></tr>';
+                let html = `
+                    <div class="w3-card w3-white w3-margin-top">
+                        <header class="w3-container w3-purple">
+                            <h3><i class="fas fa-comments"></i> Comentarios (${comentarios.length})</h3>
+                        </header>
+                        <div class="w3-container w3-responsive">
+                            <table class="w3-table-all w3-hoverable tabla-comprimida">
+                                <tr class="w3-purple">
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Post ID</th>
+                                    <th>Comentario</th>
+                                </tr>
+                `;
                 
-                // Mostrar solo los primeros 10
-                comentarios.slice(0, 10).forEach(comentario => {
+                comentarios.slice(0, 12).forEach(comentario => {
                     html += `
                         <tr>
-                            <td>${comentario.id}</td>
+                            <td><span class="w3-badge w3-purple">${comentario.id}</span></td>
                             <td>${comentario.name}</td>
-                            <td>${comentario.email}</td>
+                            <td class="email-cell">${comentario.email}</td>
                             <td>${comentario.postId}</td>
+                            <td><small>${comentario.body.substring(0, 40)}...</small></td>
                         </tr>
                     `;
                 });
                 
-                html += '</table>';
-                if (comentarios.length > 10) {
-                    html += `<p>Mostrando 10 de ${comentarios.length} comentarios</p>`;
+                html += `</table></div>`;
+                
+                if (comentarios.length > 12) {
+                    html += `
+                        <div class="w3-container w3-light-grey w3-padding">
+                            <p class="w3-small"><i class="fas fa-info-circle"></i> Mostrando 12 de ${comentarios.length} comentarios</p>
+                        </div>
+                    `;
                 }
+                
+                html += `</div>`;
                 document.getElementById('contenido').innerHTML = html;
-                mostrarMensaje('Comentarios cargados correctamente', 'exito');
+                mostrarMensaje(`✓ ${comentarios.length} comentarios cargados`, 'exito');
                 
             } catch (error) {
-                mostrarMensaje('Error al cargar comentarios: ' + error.message, 'error');
+                mostrarMensaje(`✗ Error al cargar comentarios: ${error.message}`, 'error');
             }
         }
+        
+        // Cargar datos iniciales al abrir
+        window.addEventListener('load', () => {
+            // Opcional: cargar algo automáticamente
+            // cargarUsuarios();
+        });
     </script>
 </body>
 </html>
