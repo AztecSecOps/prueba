@@ -334,3 +334,204 @@ css
 .w3-table-all td {
     padding: 10px 8px;
 }
+
+Cómo usar la aplicación
+Primer uso:
+
+    Abre la terminal en la carpeta del proyecto
+
+    Escribe: node server.js
+
+    Abre tu navegador en http://localhost:3000
+
+    Verás la página con tres botones
+
+Para probar cada función:
+
+Ver usuarios:
+
+    Haz clic en el botón verde "Usuarios"
+
+    Verás un mensaje "Cargando usuarios..."
+
+    Después de un segundo, verás una tabla con 10 personas
+
+    Cada persona tiene: ID, Nombre, Email, Ciudad, Compañía
+
+Ver posts:
+
+    Haz clic en el botón azul "Posts"
+
+    Verás una tabla con publicaciones
+
+    Cada publicación tiene: ID, Título, ID del usuario, y un fragmento del contenido
+
+    Solo se muestran las primeras 15 publicaciones de 100
+
+Ver comentarios:
+
+    Haz clic en el botón morado "Comentarios"
+
+    Verás una tabla con comentarios
+
+    Cada comentario tiene: ID, Nombre, Email, ID del post, y un fragmento del comentario
+
+    Solo se muestran los primeros 12 comentarios de 500
+
+Mensajes que verás:
+
+    💙 Azul: "Cargando..." - Significa que está obteniendo datos de internet
+
+    💚 Verde: "X datos cargados exitosamente" - Significa que todo salió bien
+
+    ❤️ Rojo: "Error al cargar datos" - Significa que algo salió mal (quizás no tienes internet)
+    ¿Qué aprendemos con este proyecto?
+Habilidades técnicas:
+
+    Configurar un servidor web local con Node.js y Express
+
+    Crear páginas web interactivas con HTML, CSS y JavaScript
+
+    Comunicar frontend y backend usando Fetch API
+
+    Consumir APIs externas y mostrar los datos
+
+    Manejar errores y estados de carga
+
+    Organizar proyectos en archivos y carpetas
+
+Conceptos importantes:
+
+    Arquitectura cliente-servidor: Cómo se comunican el navegador (cliente) y el servidor
+
+    Peticiones HTTP: Cómo se piden datos a través de internet
+
+    Formato JSON: Cómo se estructuran los datos en la web moderna
+
+    Programación asíncrona: Cómo manejar operaciones que toman tiempo (como pedir datos de internet)
+
+    Manejo de dependencias: Cómo usar herramientas de otras personas en nuestro proyecto
+
+Buenas prácticas:
+
+    Separación de responsabilidades: El servidor hace una cosa, el frontend hace otra
+
+    Código organizado: Cada archivo tiene un propósito claro
+
+    Manejo de errores: La aplicación no se "rompe" si algo sale mal
+
+    Experiencia de usuario: Mostrar mensajes claros al usuario
+
+    Documentación: Explicar cómo funciona el código
+    Código Completo (para referencia)
+server.js completo:
+javascript
+
+import express from 'express';
+import cors from 'cors';
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
+
+// Obtener usuarios
+app.get('/api/users', async (req, res) => {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener usuarios' });
+    }
+});
+
+// Obtener posts
+app.get('/api/posts', async (req, res) => {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener posts' });
+    }
+});
+
+// Obtener comentarios
+app.get('/api/comments', async (req, res) => {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/comments');
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener comentarios' });
+    }
+});
+
+// Ruta principal
+app.get('/', (req, res) => {
+    res.sendFile('index.html', { root: 'public' });
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+    console.log(`Servidor en: http://localhost:${PORT}`);
+});
+
+package.json completo:
+json
+
+{
+  "name": "servidor-estatico-datafake",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+
+HTML básico (parte principal):
+html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Servidor DataFake</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="w3-container">
+        <h1>Servidor Estático DataFake</h1>
+        <button class="w3-button w3-green" onclick="cargarUsuarios()">Usuarios</button>
+        <button class="w3-button w3-blue" onclick="cargarPosts()">Posts</button>
+        <button class="w3-button w3-purple" onclick="cargarComentarios()">Comentarios</button>
+        
+        <div id="mensaje"></div>
+        <div id="contenido"></div>
+    </div>
+    
+    <script>
+        // El código JavaScript va aquí
+    </script>
+</body>
+</html>
+
+Resumen Final
+
+Este proyecto "Servidor Estático DataFake" es una aplicación web educativa que demuestra:
+
+    Cómo crear un servidor web desde cero usando Node.js y Express
+
+    Cómo construir una interfaz web interactiva con HTML, CSS y JavaScript
+
+    Cómo comunicar frontend y backend usando Fetch API
+
+    Cómo consumir datos de internet de una API pública
+
+    Cómo manejar estados y errores para buena experiencia de usuario
