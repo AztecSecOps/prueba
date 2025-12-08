@@ -412,8 +412,7 @@ Conceptos importantes:
 
     Manejo de dependencias: Cómo usar herramientas de otras personas en nuestro proyecto
 
-    Documentación: Explicar cómo funciona el código
-    Código Completo (para referencia)
+Código Completo (para referencia)
 server.js completo:
 javascript
 
@@ -525,4 +524,5 @@ Este proyecto "Servidor Estático DataFake" es una aplicación web educativa que
     Cómo consumir datos de internet de una API pública
 
     Cómo manejar estados y errores para buena experiencia de usuario
+
 
