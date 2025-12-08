@@ -17,13 +17,15 @@ Tecnologías Utilizadas:
 
     HTML5 (estructura de la página web)
 
-    CSS3 (estilos visuales)
-
     Fetch API (para comunicación con internet)
+
+    W3.CSS (framework de diseño)
 
 ¿Qué es este proyecto?
 
 Este proyecto es una aplicación web completa que funciona en tu propia computadora. Es como un pequeño sitio web personal que puedes abrir en tu navegador, pero en lugar de estar en internet, corre directamente en tu máquina.
+
+La aplicación demuestra cómo crear un servidor web local que obtiene datos de internet y los muestra de manera organizada en una interfaz web simple y atractiva.
 La idea principal es simple:
 
     Tienes un programa servidor que se ejecuta en tu computadora
@@ -36,184 +38,199 @@ La idea principal es simple:
 
 ¿Por qué se llama "DataFake"?
 
-Porque usa datos "falsos" o de prueba. No son datos reales de personas, sino información de ejemplo que sirve para practicar y aprender.
+Porque usa datos "falsos" o de prueba. No son datos reales de personas, sino información de ejemplo que sirve para practicar y aprender. Estos datos vienen de JSONPlaceholder, una API pública que proporciona datos de prueba para desarrolladores.
 ¿Qué hace exactamente el proyecto?
 
-Cuando abres la aplicación, ves una página con tres botones grandes. Cada botón hace algo diferente:
-Botón 1: "Usuarios"
+Cuando abres la aplicación, ves una página con tres botones grandes y coloridos. Cada botón tiene una función específica:
+Botón 1: "Usuarios" (Color verde)
 
-    Muestra una lista de personas de ejemplo
+    Muestra una lista de 10 personas de ejemplo
 
-    Para cada persona muestra: nombre, email, ciudad donde vive, y compañía donde trabaja
+    Para cada persona muestra información detallada:
 
-    Son 10 usuarios en total
+        Nombre completo
 
-Botón 2: "Posts"
+        Nombre de usuario
+
+        Dirección de email
+
+        Ciudad donde vive
+
+        Compañía donde trabaja
+
+    Los datos están organizados en una tabla con columnas claras
+
+Botón 2: "Posts" (Color azul)
 
     Muestra publicaciones o artículos de ejemplo
 
-    Para cada post muestra: título, quién lo escribió, y un pequeño fragmento del contenido
+    Hay 100 posts disponibles, pero la aplicación muestra solo los primeros 15 para no saturar la pantalla
 
-    Son 100 posts, pero muestra solo los primeros 15 para no saturar la pantalla
+    Para cada post se muestra:
 
-Botón 3: "Comentarios"
+        Título del post
+
+        ID del usuario que lo escribió
+
+        Un pequeño fragmento del contenido
+
+    Al final de la tabla hay un mensaje indicando cuántos posts hay en total
+
+Botón 3: "Comentarios" (Color morado)
 
     Muestra comentarios que personas hacen en los posts
 
-    Para cada comentario muestra: nombre de quien comenta, su email, y un fragmento del comentario
+    Hay 500 comentarios disponibles, pero se muestran solo los primeros 12
 
-    Son 500 comentarios, pero muestra solo los primeros 12
+    Para cada comentario se muestra:
+
+        Nombre de quien comenta
+
+        Su dirección de email
+
+        ID del post al que pertenece el comentario
+
+        Un fragmento del comentario
 
 ¿Cómo funciona por dentro?
 
-El proyecto está dividido en dos partes principales:
+El proyecto está dividido en dos partes principales que trabajan juntas:
 Parte 1: El Servidor (Backend)
 
 Este es el programa que corre en tu computadora. Se llama server.js y hace tres cosas importantes:
 
-    Sirve los archivos de la página web (el HTML, CSS y JavaScript)
+1. Sirve los archivos de la página web
+Cuando abres el navegador y vas a http://localhost:3000, el servidor envía los archivos HTML, CSS y JavaScript que forman la página web.
 
-    Actúa como intermediario entre tu navegador y internet
+2. Actúa como intermediario
+El servidor se comunica con internet por ti. Cuando tu página web quiere datos, no los pide directamente a JSONPlaceholder, sino que se los pide al servidor, y el servidor se los pide a JSONPlaceholder.
 
-    Obtiene datos de un sitio web llamado JSONPlaceholder
-
-El código del servidor es bastante simple:
-javascript
-
-// Esto crea el servidor web
-const app = express();
-
-// Esto dice al servidor: "sirve los archivos de la carpeta 'public'"
-app.use(express.static('public'));
-
-// Esto crea una "ruta" para obtener usuarios
-app.get('/api/users', async (req, res) => {
-    // Aquí el servidor pide datos a internet
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    const data = await response.json();
-    
-    // Y aquí los envía a tu navegador
-    res.json(data);
-});
-
+3. Obtiene y procesa datos
+El servidor sabe cómo hablar con JSONPlaceholder, obtiene los datos en formato crudo, y los prepara para que tu página web los pueda entender y mostrar fácilmente.
 Parte 2: La Página Web (Frontend)
 
 Esta es la parte que ves en el navegador. Está en el archivo index.html y hace tres cosas:
 
-    Muestra los botones para que hagas clic
+1. Muestra la interfaz de usuario
+Presenta los botones, títulos, mensajes y áreas donde aparecerán los datos. Todo está diseñado para ser fácil de usar y entender.
 
-    Pide datos al servidor cuando haces clic en un botón
+2. Maneja la interacción del usuario
+Cuando haces clic en un botón, el JavaScript detecta ese clic y ejecuta la función correspondiente. Por ejemplo, si haces clic en "Usuarios", ejecuta la función cargarUsuarios().
 
-    Muestra los datos en tablas bonitas
-
-Cuando haces clic en "Usuarios", esto es lo que pasa:
-javascript
-
-async function cargarUsuarios() {
-    // 1. Muestra un mensaje "Cargando..."
-    mostrarMensaje('Cargando usuarios...', 'cargando');
-    
-    // 2. Pide datos al servidor
-    const respuesta = await fetch('/api/users');
-    const usuarios = await respuesta.json();
-    
-    // 3. Crea una tabla con los datos
-    let html = '<table>';
-    usuarios.forEach(usuario => {
-        html += `<tr>
-            <td>${usuario.name}</td>
-            <td>${usuario.email}</td>
-        </tr>`;
-    });
-    html += '</table>';
-    
-    // 4. Muestra la tabla en la página
-    document.getElementById('contenido').innerHTML = html;
-}
-
+3. Muestra los datos obtenidos
+Cuando llegan los datos del servidor, el JavaScript los toma y crea tablas HTML dinámicamente. Luego inserta esas tablas en la página para que tú las puedas ver.
 ¿Por qué necesita un servidor intermedio?
 
-Esta es una parte técnica importante. Imagina que quieres pedir datos de un sitio web, pero ese sitio web tiene reglas de seguridad. Una de esas reglas se llama CORS (Cross-Origin Resource Sharing).
+Esta es una parte técnica importante que vale la pena entender:
+El problema de seguridad
+
+Los navegadores web tienen reglas de seguridad muy estrictas. Una de estas reglas se llama CORS (Cross-Origin Resource Sharing), que en español significa "Compartición de Recursos entre Orígenes Cruzados".
+
+Esta regla dice básicamente: "Una página web de un sitio (por ejemplo, localhost) no puede pedir datos a otro sitio (por ejemplo, jsonplaceholder.typicode.com) a menos que ese otro sitio lo permita explícitamente."
+Por qué existe esta regla
+
+Esta regla existe por seguridad. Imagina que visitas un sitio web malicioso. Sin esta regla, ese sitio podría intentar acceder a tus datos en otros sitios (como tu banco, tu email, etc.). CORS evita este tipo de ataques.
+Nuestra solución
+
+Nuestro servidor actúa como intermediario autorizado:
+
+    Tu navegador (en localhost:3000) SÍ puede hablar con tu servidor (también en localhost:3000) porque están en el mismo origen
+
+    Tu servidor SÍ puede hablar con JSONPlaceholder porque no está sujeto a las reglas CORS de los navegadores
+
+    Así obtenemos los datos sin violar las reglas de seguridad
+
+Es como si tuvieras un amigo que puede entrar a un edificio restringido. Tú no puedes entrar, pero le pides a tu amigo que entre, traiga lo que necesitas, y te lo dé fuera del edificio.
 Instalación Paso a Paso
-Paso 1: Prepara tu computadora
+Prepara tu computadora
 
 Antes de empezar, necesitas tener instalado Node.js. Node.js es como un "motor" que permite ejecutar programas de JavaScript fuera del navegador.
 
-Cómo verificar si ya lo tienes:
+    La estructura debería verse así:
+    text
 
-    Abre la terminal o símbolo del sistema
+tu-carpeta/
+├── server.js
+├── package.json
+└── public/
+    ├── index.html
 
-    Escribe: node --version
+Instala las dependencias
 
-    Si ves un número como "v18.12.0", ¡perfecto! Si ves un error, necesitas instalarlo.
+Las "dependencias" son herramientas adicionales que necesita el proyecto para funcionar. En nuestro caso necesitamos dos:
 
-Para instalar Node.js:
+    Express: Esta es la herramienta que nos permite crear el servidor web fácilmente
 
-    Ve a nodejs.org
-
-    Descarga la versión "LTS" (Long Term Support)
-
-    Instálala como cualquier programa normal
-
-Paso 2: Descarga el proyecto
-
-Tienes dos opciones:
-
-Opción A: Si tienes los archivos ya descargados
-
-    Solo asegúrate de que todos los archivos estén en una misma carpeta
-
-Opción B: Si necesitas crear los archivos
-
-    Crea una nueva carpeta llamada servidor-datafake
-
-    Dentro crea otra carpeta llamada public
-
-    Copia los códigos que te daré más adelante en los archivos correctos
-
-Paso 3: Instala las dependencias
-
-Las "dependencias" son herramientas adicionales que necesita el proyecto. En este caso necesitamos:
-
-    Express: Para crear el servidor web
-
-    CORS: Para permitir la comunicación entre el navegador y el servidor
+    CORS: Esta herramienta soluciona los problemas de comunicación entre el navegador y el servidor
 
 Cómo instalarlas:
 
-    Abre la terminal en la carpeta del proyecto
+    Abre la terminal o símbolo del sistema
 
-    Escribe: npm install
+    Navega hasta la carpeta de tu proyecto:
+    text
 
-    Espera a que termine (puede tomar unos minutos)
+cd ruta/a/tu/carpeta/servidor-datafake
 
-Verás que se crea una nueva carpeta llamada node_modules. Esta carpeta contiene todas las herramientas instaladas.
-Paso 4: Ejecuta el servidor
+Escribe el siguiente comando:
 
-En la misma terminal, escribe:
-bash
+npm install
+
+Qué pasa cuando ejecutas npm install:
+
+    npm (Node Package Manager) lee el archivo package.json
+
+    Ve que necesitamos Express y CORS
+
+    Descarga estas herramientas de internet
+
+    Las guarda en una nueva carpeta llamada node_modules
+
+    Crea un archivo llamado package-lock.json que registra exactamente qué versiones se instalaron
+
+Ejecuta el servidor
+
+Una vez instaladas las dependencias, estás listo para iniciar el servidor:
+
+    Asegúrate de que todavía estás en la carpeta del proyecto en la terminal
+
+    Escribe el siguiente comando:
 
 node server.js
 
-Deberías ver un mensaje como:
-text
+Deberías ver un mensaje como este:
 
 Servidor iniciado en: http://localhost:3000
 
-Paso 5: Abre la aplicación
+Qué significa esto:
 
-    Abre tu navegador web (Chrome, Firefox, Edge, etc.)
+    localhost significa "esta computadora"
 
-    En la barra de direcciones, escribe: http://localhost:3000
+    3000 es el "puerto" donde el servidor está escuchando
 
-    ¡Listo! Ya deberías ver la aplicación
+    Juntos, localhost:3000 es la dirección donde puedes encontrar tu aplicación
 
+Abre la aplicación
+
+    Abre tu navegador web favorito (Chrome, Firefox, Edge, Safari, etc.)
+
+    En la barra de direcciones (donde normalmente escribes "google.com"), escribe:
+
+http://localhost:3000
+
+    Presiona Enter
+
+¡Listo! Ahora deberías ver la aplicación funcionando. Verás el título "Servidor Estático DataFake" y tres botones de colores.
+
+Nota importante: No cierres la terminal donde ejecutaste node server.js. Si la cierras, el servidor se detendrá y la aplicación dejará de funcionar. Puedes minimizarla, pero no cerrarla.
 Archivos del Proyecto Explicados
 
-El proyecto tiene solo unos pocos archivos, cada uno con un propósito específico:
+El proyecto tiene solo unos pocos archivos, pero cada uno tiene un propósito específico y importante:
 1. package.json - La "receta" del proyecto
 
-Este archivo le dice a Node.js qué necesita el proyecto para funcionar. Es como una lista de ingredientes:
+Este archivo es como la receta de cocina del proyecto. Le dice a Node.js exactamente qué ingredientes necesita y cómo prepararlos.
+
+Contenido típico de package.json:
 json
 
 {
@@ -229,112 +246,131 @@ json
   }
 }
 
-Explicación:
+Explicación de cada parte:
 
-    name: El nombre del proyecto
+    name: El nombre del proyecto. Puede ser cualquier nombre que quieras, pero sin espacios.
 
-    version: La versión (1.0.0 significa primera versión completa)
+    version: La versión del proyecto. "1.0.0" significa que es la primera versión completa.
 
-    main: El archivo principal que se ejecuta
+    main: El archivo principal que se ejecuta cuando inicias el proyecto. En nuestro caso es server.js.
 
-    scripts: Comandos que podemos usar (como npm start)
+    scripts: Comandos que puedes ejecutar fácilmente. Por ejemplo, en lugar de escribir node server.js, podrías escribir npm start.
 
-    dependencies: Las herramientas que necesita el proyecto
+    dependencies: La lista de herramientas que necesita el proyecto. Cada herramienta tiene un nombre y una versión.
 
 2. server.js - El cerebro del proyecto
 
-Este es el archivo más importante. Contiene todo el código del servidor.
+Este es el archivo más importante. Contiene todo el código que hace funcionar el servidor.
 
-Partes importantes del código:
-javascript
+Las partes principales del server.js:
 
-// Importar las herramientas necesarias
-import express from 'express';
-import cors from 'cors';
+Importar herramientas:
+Al inicio del archivo, importamos las herramientas que necesitamos. Es como decir "voy a usar estas herramientas en mi proyecto".
 
-// Crear la aplicación web
-const app = express();
+Crear la aplicación:
+Creamos una nueva aplicación Express. Piensa en esto como crear una nueva "casa" para nuestro servidor web.
 
-// Usar CORS (permite que el navegador se comunique con el servidor)
-app.use(cors());
+Configurar middleware:
+El "middleware" son funciones que se ejecutan automáticamente cuando llega una petición. Configuramos tres:
 
-// Servir archivos estáticos desde la carpeta "public"
-app.use(express.static('public'));
+    CORS: Permite que el navegador se comunique con el servidor
 
-¿Qué hace cada parte?
+    JSON parser: Convierte datos JSON a objetos JavaScript
 
-    import express from 'express': Trae la herramienta Express que nos permite crear un servidor web
+    Static files: Hace que los archivos en la carpeta public sean accesibles
 
-    import cors from 'cors': Trae la herramienta CORS que soluciona problemas de comunicación
+Definir rutas:
+Las "rutas" son como direcciones dentro de nuestro servidor. Tenemos tres rutas principales:
 
-    const app = express(): Crea una nueva aplicación web
+    /api/users - Para obtener usuarios
 
-    app.use(cors()): Aplica la solución CORS a toda la aplicación
+    /api/posts - Para obtener posts
 
-    app.use(express.static('public')): Dice "todos los archivos en la carpeta 'public' se pueden acceder desde el navegador"
+    /api/comments - Para obtener comentarios
 
-Las rutas del servidor:
+Cada ruta hace básicamente lo mismo:
 
-El servidor tiene tres "rutas" o direcciones especiales:
-javascript
+    Recibe una petición del navegador
 
-// Cuando alguien visita /api/users
-app.get('/api/users', async (req, res) => {
-    // 1. Ir a internet y pedir usuarios
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    
-    // 2. Convertir la respuesta a formato JSON
-    const data = await response.json();
-    
-    // 3. Enviar los datos al navegador
-    res.json(data);
-});
+    Va a internet a buscar datos de JSONPlaceholder
 
-Las otras dos rutas (/api/posts y /api/comments) funcionan exactamente igual, solo cambia la dirección de internet a la que van.
+    Espera a que lleguen los datos
+
+    Los envía de vuelta al navegador
+
+Manejar errores:
+También tenemos código para manejar errores. Por ejemplo, si alguien trata de acceder a una ruta que no existe, el servidor responde con un mensaje de error claro.
+
+Iniciar el servidor:
+Finalmente, le decimos al servidor que empiece a escuchar en el puerto 3000. Una vez hecho esto, el servidor está "despierto" y listo para atender peticiones.
 3. public/index.html - Lo que ves en el navegador
 
-Este archivo contiene toda la página web. Es bastante largo porque incluye:
+Este archivo contiene toda la página web que ves cuando abres la aplicación.
 
-    La estructura HTML (títulos, botones, tablas)
+Estructura básica de index.html:
 
-    Los estilos CSS (colores, tamaños, diseños)
+La cabecera (head):
+Aquí van todas las configuraciones y enlaces a recursos externos:
 
-    El código JavaScript (la lógica de los botones)
+    El título que aparece en la pestaña del navegador
 
-Partes interesantes:
+    Los enlaces a W3.CSS (para estilos) y Font Awesome (para iconos)
 
-Los botones:
-html
+    La configuración para que la página se vea bien en móviles
 
-<button onclick="cargarUsuarios()">
-    <i class="fas fa-users"></i> Cargar Usuarios
-</button>
+El cuerpo (body):
+Aquí va todo el contenido visible:
 
-Cuando haces clic en este botón, llama a la función cargarUsuarios() que está definida en el JavaScript.
+    El encabezado con el título
 
-El área de contenido:
-html
+    Los tres botones principales
 
-<div id="contenido">
-    <!-- Aquí aparecerán los datos cuando hagas clic -->
-</div>
+    El área de mensajes (donde aparece "Cargando...")
 
-Esta es una "caja vacía" que se llenará con tablas cuando hagas clic en los botones.
-4. public/style.css - El diseño visual
+    El área de contenido (donde aparecen las tablas)
 
-Aunque usamos W3.CSS (un framework de estilos), tenemos un poco de CSS personalizado:
-css
+    El pie de página
 
-/* Hace que las tarjetas tengan bordes redondeados */
-.main-card {
-    border-radius: 10px;
-}
+El script:
+Al final del archivo hay un gran bloque de código JavaScript. Este código es el que hace que los botones funcionen. Contiene tres funciones principales:
 
-/* Hace que las tablas sean más compactas */
-.w3-table-all td {
-    padding: 10px 8px;
-}
+    cargarUsuarios() - Se ejecuta al hacer clic en el botón Usuarios
 
+    cargarPosts() - Se ejecuta al hacer clic en el botón Posts
+
+    cargarComentarios() - Se ejecuta al hacer clic en el botón Comentarios
+
+Cada función hace lo mismo básicamente:
+
+    Muestra un mensaje "Cargando..."
+
+    Pide datos al servidor
+
+    Espera la respuesta
+
+    Crea una tabla con los datos
+
+    Muestra la tabla en la página
+
+    Muestra un mensaje de éxito o error
+
+4. public/style.css - Los toques finales de diseño
+
+Aunque usamos W3.CSS para la mayoría de los estilos, este archivo contiene algunos estilos personalizados para hacer que la aplicación se vea aún mejor.
+
+Contenido típico de style.css:
+
+Estilos para la tarjeta principal:
+Hace que la tarjeta que contiene toda la aplicación tenga bordes redondeados y una sombra suave.
+
+Mejoras para las tablas:
+Ajusta el espaciado dentro de las tablas para que se vean más compactas y profesionales.
+
+Responsividad:
+Asegura que la aplicación se vea bien en teléfonos móviles. Por ejemplo, en pantallas pequeñas, los botones se apilan verticalmente en lugar de estar uno al lado del otro.
+
+Animaciones:
+Agrega animaciones sutiles, como un efecto de "fade in" cuando aparecen los datos.
 Cómo usar la aplicación
 Primer uso:
 
@@ -344,185 +380,136 @@ Primer uso:
 
     Abre tu navegador en http://localhost:3000
 
-    Verás la página con tres botones
+    Verás la página con tres botones coloridos
 
 Para probar cada función:
 
 Ver usuarios:
 
-    Haz clic en el botón verde "Usuarios"
+    Haz clic en el botón verde que dice "Usuarios"
 
-    Verás un mensaje "Cargando usuarios..."
+    Inmediatamente verás un mensaje azul que dice "Cargando usuarios..."
 
-    Después de un segundo, verás una tabla con 10 personas
+    Después de 1-2 segundos, el mensaje azul desaparece y aparece una tabla
 
-    Cada persona tiene: ID, Nombre, Email, Ciudad, Compañía
+    La tabla tiene 10 filas (una por cada usuario) y 5 columnas:
+
+        ID (un número verde)
+
+        Nombre (nombre completo y nombre de usuario)
+
+        Email (dirección de correo electrónico)
+
+        Ciudad (ciudad donde vive)
+
+        Compañía (empresa donde trabaja)
 
 Ver posts:
 
-    Haz clic en el botón azul "Posts"
+    Haz clic en el botón azul que dice "Posts"
 
-    Verás una tabla con publicaciones
+    Verás el mensaje "Cargando posts..."
 
-    Cada publicación tiene: ID, Título, ID del usuario, y un fragmento del contenido
+    Aparece una tabla con publicaciones
 
-    Solo se muestran las primeras 15 publicaciones de 100
+    La tabla tiene hasta 15 filas (de 100 disponibles) y 4 columnas:
+
+        ID (un número azul)
+
+        Título (título del post)
+
+        Usuario ID (quién escribió el post)
+
+        Contenido (un fragmento del texto)
+
+    Debajo de la tabla hay un mensaje que dice "Mostrando 15 de 100 posts"
 
 Ver comentarios:
 
-    Haz clic en el botón morado "Comentarios"
+    Haz clic en el botón morado que dice "Comentarios"
 
-    Verás una tabla con comentarios
+    Verás el mensaje "Cargando comentarios..."
 
-    Cada comentario tiene: ID, Nombre, Email, ID del post, y un fragmento del comentario
+    Aparece una tabla con comentarios
 
-    Solo se muestran los primeros 12 comentarios de 500
+    La tabla tiene hasta 12 filas (de 500 disponibles) y 5 columnas:
 
-Mensajes que verás:
+        ID (un número morado)
 
-    💙 Azul: "Cargando..." - Significa que está obteniendo datos de internet
+        Nombre (quién hizo el comentario)
 
-    💚 Verde: "X datos cargados exitosamente" - Significa que todo salió bien
+        Email (correo del comentarista)
 
-    ❤️ Rojo: "Error al cargar datos" - Significa que algo salió mal (quizás no tienes internet)
-    ¿Qué aprendemos con este proyecto?
-Habilidades técnicas:
+        Post ID (a qué post pertenece)
 
-    Configurar un servidor web local con Node.js y Express
+        Comentario (un fragmento del comentario)
 
-    Crear páginas web interactivas con HTML, CSS y JavaScript
+    Debajo de la tabla hay un mensaje que dice "Mostrando 12 de 500 comentarios"
 
-    Comunicar frontend y backend usando Fetch API
+Mensajes que verás durante el uso:
 
-    Consumir APIs externas y mostrar los datos
+    💙 Mensaje azul: Aparece cuando estás esperando datos. Dice "Cargando..." con un ícono que gira. Significa que la aplicación está trabajando para obtener los datos de internet.
 
-    Manejar errores y estados de carga
+    💚 Mensaje verde: Aparece cuando todo sale bien. Dice algo como "10 usuarios cargados exitosamente" con un ícono de check. Significa que los datos llegaron correctamente y se mostraron.
 
-    Organizar proyectos en archivos y carpetas
-
-Conceptos importantes:
-
-    Arquitectura cliente-servidor: Cómo se comunican el navegador (cliente) y el servidor
-
-    Peticiones HTTP: Cómo se piden datos a través de internet
-
-    Formato JSON: Cómo se estructuran los datos en la web moderna
-
-    Programación asíncrona: Cómo manejar operaciones que toman tiempo (como pedir datos de internet)
-
-    Manejo de dependencias: Cómo usar herramientas de otras personas en nuestro proyecto
-
-Código Completo (para referencia)
-server.js completo:
-javascript
-
-import express from 'express';
-import cors from 'cors';
-
-const app = express();
-const PORT = 3000;
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
-
-// Obtener usuarios
-app.get('/api/users', async (req, res) => {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener usuarios' });
-    }
-});
-
-// Obtener posts
-app.get('/api/posts', async (req, res) => {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener posts' });
-    }
-});
-
-// Obtener comentarios
-app.get('/api/comments', async (req, res) => {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/comments');
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener comentarios' });
-    }
-});
-
-// Ruta principal
-app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: 'public' });
-});
-
-// Iniciar servidor
-app.listen(PORT, () => {
-    console.log(`Servidor en: http://localhost:${PORT}`);
-});
-
-package.json completo:
-json
-
-{
-  "name": "servidor-estatico-datafake",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "express": "^4.18.0",
-    "cors": "^2.8.5"
-  },
-  "scripts": {
-    "start": "node server.js"
-  }
-}
-
-HTML básico (parte principal):
-html
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Servidor DataFake</title>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-</head>
-<body>
-    <div class="w3-container">
-        <h1>Servidor Estático DataFake</h1>
-        <button class="w3-button w3-green" onclick="cargarUsuarios()">Usuarios</button>
-        <button class="w3-button w3-blue" onclick="cargarPosts()">Posts</button>
-        <button class="w3-button w3-purple" onclick="cargarComentarios()">Comentarios</button>
-        
-        <div id="mensaje"></div>
-        <div id="contenido"></div>
-    </div>
+    ❤️ Mensaje rojo: Aparece cuando algo sale mal. Dice algo como "Error al cargar usuarios: No se pudo conectar". Significa que hubo un problema, usualmente de conexión a internet.
     
-    <script>
-        // El código JavaScript va aquí
-    </script>
-</body>
-</html>
+Conceptos Técnicos Importantes (Explicados Simple)
+1. ¿Qué es un servidor web?
+
+Un servidor web es un programa que "sirve" páginas web. Piensa en él como un mesero en un restaurante:
+
+    Tú (el cliente) pides algo (abres una página web)
+
+    El mesero (servidor) toma tu pedido
+
+    Va a la cocina (procesa la petición)
+
+    Te trae lo que pediste (envía la página web)
+
+En nuestro caso, el "restaurante" es tu propia computadora.
+2. ¿Qué es Node.js?
+
+Node.js es un "motor" que permite ejecutar código JavaScript fuera del navegador. Normalmente, JavaScript solo corre en navegadores (como Chrome o Firefox). Node.js permite que JavaScript también corra en servidores.
+
+Es como si un actor que solo trabajaba en teatro (navegador) ahora pudiera también trabajar en cine (servidor).
+3. ¿Qué es Express.js?
+
+Express.js es una "herramienta" para Node.js que hace más fácil crear servidores web. Sin Express, crear un servidor web sería mucho más complicado (como construir una casa sin herramientas eléctricas).
+
+Express nos da funciones pre-hechas para:
+
+    Manejar rutas (como /api/users)
+
+    Servir archivos estáticos
+
+    Procesar datos que vienen del navegador
+
+    Enviar respuestas al navegador
+
+4. ¿Qué es Fetch API?
+
+Fetch API es la forma moderna de pedir datos en JavaScript. Antes se usaba algo llamado XMLHttpRequest que era más complicado.
+
+Fetch funciona con "promesas", que son como decir:
+"Te prometo que voy a traer estos datos. Mientras tanto, puedes hacer otras cosas. Cuando los tenga, te aviso."
+
+Esto es importante porque pedir datos de internet puede tomar tiempo (segundos), y no queremos que toda la aplicación se "congele" mientras espera.
+5. ¿Qué es JSON?
+
+JSON (JavaScript Object Notation) es un formato para datos. Es una manera de escribir información que tanto las computadoras como los humanos pueden entender.
 
 Resumen Final
 
-Este proyecto "Servidor Estático DataFake" es una aplicación web educativa que demuestra:
+Este proyecto "Servidor Estático DataFake" es más que solo código funcionando. Es una demostración práctica de múltiples conceptos importantes en el desarrollo web moderno.
+Lo que el proyecto demuestra:
 
-    Cómo crear un servidor web desde cero usando Node.js y Express
+    Capacidad técnica: Cómo crear una aplicación web completa desde cero
 
-    Cómo construir una interfaz web interactiva con HTML, CSS y JavaScript
+    Comprensión arquitectónica: Entendimiento de la relación cliente-servidor
 
-    Cómo comunicar frontend y backend usando Fetch API
+    Habilidades de programación: Uso de JavaScript moderno, manejo asíncrono, APIs
 
-    Cómo consumir datos de internet de una API pública
+    Atención al usuario: Diseño de interfaces usables con buen feedback
 
-    Cómo manejar estados y errores para buena experiencia de usuario
-
-
+    Profesionalismo: Organización, documentación, manejo de errores
